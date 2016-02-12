@@ -1,19 +1,21 @@
 {
-  "name": "docs.npmjs.com",
-  "version": "1.1.0",
-  "description": "The place where all things npm will one day be documented",
+  "name": "docs",
+  "version": "1.2.2",
+  "description": "The place where all things npm are documented",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "predev": "npm run build",
+    "dev": "nodemon index.js",
     "postinstall": "npm run build",
     "build": "bin/build.sh",
     "pretest": "npm run build",
     "prestart": "npm run build",
-    "test": "mocha"
+    "test": "standard public/js/main.js && mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/npm/docs.npmjs.com"
+    "url": "https://github.com/npm/docs"
   },
   "keywords": [
     "npm",
@@ -23,28 +25,32 @@
   "author": "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/npm/docs.npmjs.com/issues"
+    "url": "https://github.com/npm/docs/issues"
   },
-  "homepage": "https://github.com/npm/docs.npmjs.com",
+  "homepage": "https://github.com/npm/docs",
   "dependencies": {
-    "cors": "^2.4.2",
-    "express": "^4.9.5",
+    "@npm/policies": "git://github.com/npm/policies",
+    "bluebird": "^3.0.5",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
     "handlebars-helper-equal": "^1.0.0",
-    "harp": "^0.13.0",
-    "hbs": "^2.7.0",
-    "html-frontmatter": "^1.2.1",
-    "js-beautify": "^1.5.2",
-    "leven": "^1.0.1",
-    "lodash": "^2.4.1",
-    "marked": "^0.3.2",
+    "harp": "^0.20.1",
+    "hbs": "^4.0.0",
+    "html-frontmatter": "^1.5.1",
+    "js-beautify": "^1.5.10",
+    "leven": "^2.0.0",
+    "lodash": "^3.0.0",
+    "marky-markdown": "^6.0.4",
     "npm": "latest",
-    "strftime": "^0.8.2",
-    "walkdir": "0.0.7"
+    "strftime": "^0.9.2",
+    "walkdir": "0.0.11"
   },
   "devDependencies": {
-    "cheerio": "^0.18.0",
-    "mocha": "^1.21.4",
-    "nodemon": "^1.2.1",
-    "supertest": "^0.14.0"
+    "cheerio": "^0.20.0",
+    "mansplain": "^3.0.0",
+    "mocha": "^2.3.4",
+    "nodemon": "^1.8.1",
+    "standard": "^6.0.4",
+    "supertest": "^1.1.0"
   }
 }
