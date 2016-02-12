@@ -1,11 +1,11 @@
 <!--
-title: 09 - Uninstalling global packages
+title: 10 - Uninstalling global packages
 featured: true
 -->
 
 # Uninstalling global packages
 
-<iframe src="//www.youtube.com/embed/XbvjZxUZJGg" frameborder="0" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/XbvjZxUZJGg" frameborder="0" allowfullscreen></iframe>
 
 Global packages can be uninstalled with `npm uninstall -g <package>`:
 

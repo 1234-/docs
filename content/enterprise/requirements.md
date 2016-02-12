@@ -3,49 +3,58 @@ order: 2
 title: Requirements
 -->
 
-# npm Enterprise installation requirements
+# npm On-Site Prerequisites
 
-npm Enterprise has been extensively tested Ubuntu 14 (Trusty), and is
-supported on most recent public Linux distributions. It can run inside a
-virtual machine or on standard hardware. It can also be run in a [Docker container](https://github.com/npm/npme-docker).
+To install the latest version of npm On-Site, you need a server fulfilling these basic specs:
 
-Since it can be configured to only selectively mirror the public registry in
-addition to your private packages, its disk space requirements are significantly
-lighter than other private registry solutions. npm Enterprise does not use a great
-deal of processor or memory, so stock hardware will work, with at least 2GB of RAM.
+- 64-bit architecture
+- Kernel version 3.10 or higher
+- One of the following Linux flavors (see [note on supported platforms](#note-platforms) below):
+    - Ubuntu 14.04 / 15.10
+    - CentOS 7.x
+    - Red Hat Enterprise Linux (RHEL) 7.x
+    - Debian 7.7
+- Any number of CPUs/cores
+- At least 4 GB of memory/RAM
+- At least 10 GB of disk space (see [note on disk space](#note-space) below)
+- Ports opened for inbound TCP traffic:
+    - 8800 (admin console)
+    - 8080 (registry)
+    - 8081 (website)
+    - 8082 (auth endpoints)
+- Access to the public internet, either directly or via proxy
 
-Its primary variable requirement is disk space: you need enough disk to hold every
-version of every package you publish, and all the packages you mirror. This can be
-anywhere from a few gigabytes to half a terabyte if you mirror the entire registry,
-so prepare accordingly and adjust your [whitelist settings](/enterprise/whitelist)
-to limit the packages you mirror.
+If using Amazon Web Services, see [note on AWS](#note-aws) below.
 
-For a walkthrough of installation, you can watch our [quickstart video](/enterprise/intro).
+<a name="note-platforms"></a>
+## Note on Supported Platforms
 
-## Install the latest version of Node
+We have tested extensively on the operating systems listed above. It may be possible to run npm On-Site on other systems, but, at this time, no other systems are officially supported.
 
-[Update Node](/getting-started/installing-node) to the latest version.
+We do our best to support as many systems as possible. If you have special requirements or feedback for other platforms, please reach out to us at support@npmjs.com. We'd love to work with you.
 
-For Ubuntu, we recommend the distribution put together by our friends at
-[NodeSource](https://nodesource.com/). To install it, run:
+You can also check for system issues on the <a href="https://github.com/npm/npmo-installer/issues" target="_blank">npmo-installer GitHub repo</a>.
 
-```bash
-curl -sL https://deb.nodesource.com/setup | sudo bash -
-apt-get install nodejs
-```
+<a name="note-space"></a>
+## Note on Disk Space
 
-## Install the latest version of npm
+The amount of disk space needed is directly proportional to the number and size of packages your registry will need to host.
 
-To use npm Enterprise, the server needs to have a recent version (2.x or higher) of the npm client installed. To update npm, run:
+For example, the full public registry hosts at least 200,000 packages with an average of 6 versions each, and this requires at least half a terabyte of storage. Smaller registries, however, can get away with just a few gigabytes.
 
-```bash
-sudo npm install npm -g
-```
+Therefore, a server with 50 - 100 GB is a good choice for most registries.
 
-NOTE: Depending on your local setup, you may be able to omit sudo.
+Please reserve at least 6 GB for OS resources and npm On-Site appliance containers.
 
-## Remove password requirement for sudo
+Once installed, you can configure where registry data is stored on your server via the "Storage" paths on the "Settings" page of the admin web console (port 8800). For details on configuring your On-Site instance, please see [this page](/enterprise/server-configuration).
 
-npm Enterprise must be installed from an account that has passwordless sudo. As part of the installation process, npm Enterprise creates the npme user.
+<a name="note-aws"></a>
+## Note on AWS
 
-See [How to remove password prompt](http://askubuntu.com/questions/235084/how-do-i-remove-ubuntus-password-requirement).
+We recommend using an <a href="https://aws.amazon.com/ec2/instance-types/#M3" target="_blank">m3.large</a> instance type.
+
+If extra storage is needed, you may want to <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html" target="_blank">attach an EBS volume</a> to your EC2 instance and configure the "Storage" paths on your On-Site appliance to use directories under the mount point.
+
+To open ports on your AWS EC2 instance, you can define a Security Group with the following Inbound settings:
+
+![AWS Security Group](/images/aws-security-group.png)
