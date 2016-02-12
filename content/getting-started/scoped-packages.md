@@ -1,15 +1,23 @@
 <!--
-title: 13 - Working with scoped packages
+title: 14 - Working with scoped packages
 featured: true
 -->
 
-# Scoped Packages
+# Working with scoped packages
 
-Scopes are like namespaces for npm modules. Each npm user has their own scope.
+Scopes are like namespaces for npm modules. If a package's name begins with `@`, then it is a scoped package. The scope is everything in between the `@` and the slash.
+
+```
+@scope/project-name
+```
+
+Each npm user has their own scope.
 
 ```
 @username/project-name
 ```
+
+You can find more in depth information about scopes in the [CLI documentation](https://docs.npmjs.com/misc/scope#publishing-public-scoped-packages-to-the-public-npm-registry).
 
 ## Update npm and log in
 
@@ -37,10 +45,20 @@ If you use `npm init`, you can add your scope as an option to that command.
 npm init --scope=username
 ```
 
-If you use the same scope all the time, you will probably want to set this option in your `~/.npmrc` file.
+If you use the same scope all the time, you will probably want to set this option in your [`.npmrc`](https://docs.npmjs.com/files/npmrc) file.
 
 ```
 npm config set scope username
+```
+
+## Publishing a scoped package
+
+Scoped packages are private by default. To publish private modules, you need to be a paid [private modules](https://www.npmjs.com/private-modules) user.
+
+However, public scoped modules are free and don't require a paid subscription. To publish a public scoped module, set the access option when publishing it. This option will remain set for all subsequent publishes.
+
+```
+npm publish --access=public
 ```
 
 ## Using a scoped package

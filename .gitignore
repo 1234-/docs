@@ -1,13 +1,7 @@
 node_modules
-.env
-.idea
-.DS_Store
-npm-debug.log
 
-content/api/
 content/cli/
 content/files/
 content/misc/
 content/policies/
 content.json
-content.lite.json
