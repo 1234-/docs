@@ -4,45 +4,191 @@ title: Quickstart
 featured: true
 -->
 
-<h1>Getting Started with npm Enterprise</h1> 
-<p>npm Enterprise makes it possible for your team to take all of the experience and best practices they've developed working with public npm and apply that to the management of your private packages.</p>
+# npm On-Site Quickstart
 
-<p>Your registry is hosted on site, so you have full control over who has access to your private packages, and you can also mirror the public registry to ensure you always have access to the public packages that you need.</p>
+This is the fastest way to get started with npm On-Site - your own private npm registry and website!
 
-<p>You can manage which packages get mirrored, and you can limit npm to only use your registry so you can be sure that any packages your team is using meet your standards.</p>
+## tl;dr
 
-<p>So let's set up your enterprise server.</p>
+Here's what we're going to cover in this guide:
 
-<iframe width="640" height="480" src="//www.youtube.com/embed/EK4fv4iC-4Y" frameborder="0" allowfullscreen></iframe>
+1. [Install npm On-Site on your server](#1-install)
+2. [Configure and start your On-Site instance](#2-configure-server)
+3. [Configure the npm CLI to talk to your registry](#3-configure-client)
+4. [Publish, install, and search for packages](#4-use)
 
-<h2>Before you start</h2>
+Minimal details are given for each step. For more exhaustive details, please see the linked docs pages.
 
-<p>Before you start, you'll need to:
+Here's a quick video to help walk you through this process:
 
-<ol> <li><a href="https://www.npmjs.org/enterprise">Sign up for a free trial</a></li> <li>Ensure that your organization has a user on npm. This will be used as the name of your scope.</li> </ol> </p>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/mKMaG0cixXw" frameborder="0" allowfullscreen></iframe>
 
-<h2>Tested and Approved Linux Repos</h2>
+<a name="1-install"></a>
+## 1. Install npm On-Site on your server
 
-<p>npm Enterprise will run on most Linux distros. The npme installer has been thoroughly tested on the following images:</p> <ul> <li><p>
+- Provision a modern Linux server fulfilling the [prereqs](/enterprise/requirements)
 
-<a href="http://releases.ubuntu.com/trusty/">Ubuntu 14.04.1 LTS (Trusty Tahr)</a></p> <p>On AWS, select an <a href="http://cloud-images.ubuntu.com/locator/ec2/">amd64 Trusty AMI</a>.</p> </li> </ul>
+    You will need:
 
-<h2>Configuring the server</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=64">video</a>
+    - a 64-bit version of Ubuntu 14/15 or CentOS/RHEL 7
+    - 4 GB of RAM
+    - at least 10 GB of disk space
+    - ports 8080, 8081, 8082, and 8800 opened for inbound TCP traffic
+    - access to the public internet, either directly or via proxy
 
-<p>npm Enterprise should be installed on a dedicated server.</p> <ol> <li>Install the latest version of Node. For Ubuntu, we recommend the distribution put together by our friends at <a href="https://nodesource.com/">NodeSource</a>.<pre><code>curl -sL https://deb.nodesource.com/setup | sudo bash -
-sudo apt-get install nodejs
-</code></pre> </li> <li><code>npm install npme</code> (do NOT use sudo on this command)</li> <li>Answer the questions as prompted. The two you are likely to want to customize are: <ul> <li>The full URL of your front-facing host, followed by the port number npm Enterprise is running on</li> <li>The URL of your GitHub Enterprise appliance. The default for this is public GitHub, which you can use if your company doesn't use GitHub Enterprise.</li> </ul> </li> <li><code>npme start</code></li> </ol>
+    On AWS, use an m3.large instance type and define a Security Group to open the ports above.
 
-<p><strong>Test:</strong> To make sure that the server is up and running, use <code>curl http://localhost:8080</code>. You should get a JSON response.</p>
+- Install latest Node.js and npm for <a href="https://nodejs.org/en/download/package-manager/" target="_blank">your Linux distro</a>
 
-<h2>Configuring the client</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=144">video</a> <p>Before interacting with your npm Enterprise server from the client, you'll need to update npm and log in.</p>
+    Ubuntu/Debian:
 
-<ol> <li>Get the latest version of npm. <code>sudo npm install npm -g</code></li> <li><code>npm login --registry="http://example.com/path/to/registry:8080" --scope="@myco"</code></li> <li>Fill in GitHub credentials. If you are using GitHub Enterprise, fill in the credentials that you use on that. Otherwise, use your credentials from public GitHub. Support for other auth services and standalone auth are coming soon.</li> </ol>
+    ```
+    $ curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+    $ sudo apt-get install -y nodejs
+    $ sudo npm i -g npm@latest
+    $ node -v && npm -v
+    ```
 
-<p><strong>Test: </strong>You can test your login by going to your GitHub account and clicking on Settings > Applications. You should see a personal access token named "npm on premises solution".</p>
+    CentOS/RHEL:
 
-<h2>Publishing a private package</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=220">video</a> <p> Once you're logged in, you can publish to your npm Enterprise server. </p> <ol> <li>Create a repo on GitHub that you have push access to</li> <li>Create a package.json <pre><code> { "name": "@myco/private-pkg", "version": "1.0.0", "repository": { "type": "git", "url": "https://github.com/yourname/private-pkg" } } </code></pre> </li> <li>Publish to your private npm with <code>npm publish</code>. Because the scope is in the package name, it will only be pushed up to your private registry, not to public npm.</li> </ol> <p><strong>Test: </strong>To test that the publish worked, you can log on to the server and look in <code>/etc/npme/packages/@/@myco</code>. You should see a directory for your package.</p> <h2>Using a private package</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=297">video</a> <p> Now that you have a private package on the server, you can use that package in other applications. </p> <ol> <li>Create a package.json <pre><code> { "name": "@myco/app", "version": "1.0.0", "dependencies": { "@myco/private-pkg": "*", "nodeunit": "*" } } </code></pre> </li> <li>Run <code>npm install</code>. This will download your private package from npm Enterprise, and nodeunit from public npm.</li> </ol> <p><strong>Test: </strong>Run <code>npm ls</code> to see what packages have been installed.</p> <h2>Limiting npm to the private registry (optional)</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=326">video</a>
+    ```
+    $ curl -sL https://rpm.nodesource.com/setup_4.x | sudo -E bash -
+    $ sudo yum -y install nodejs
+    $ sudo npm i -g npm@latest
+    $ node -v && npm -v
+    ```
 
-<p>If you want to, you can configure npm to only use the private registry. This can be helpful if you want to limit your organization to a certain subset of modules. For example, you might want to only use the subset of modules which have a license which is compatible with your application's license.</p> <ol> <li>In your <code>.npmrc</code> file, add a line <code>registry=http://example.com/path/to/registry:8080</code></li> </ol> <p><strong>Test: </strong>Using the package.json from above, try running <code>npm install</code>. You should get an error that says nodeunit could not be found.</p> <h2>Mirroring the public registry (optional)</h2> <a href="https://www.youtube.com/watch?v=EK4fv4iC-4Y#t=357">video</a>
+- Use npm to install `npmo`
 
-<p>You can optionally mirror modules from public npm. This can be done manually by adding packages to the whitelist, or automatically (which is not covered in this tutorial).</p> <ol> <li>On your server, run <code>npme add-package packagename</code>. This will trigger mirroring of the package and its dependencies.</li> </ol> <p><strong>Test: </strong>Look in <code>/etc/npme/packages</code> to see what packages have been mirrored.</p>
+    ```
+    $ sudo npm install npmo -g --unsafe
+    ```
+
+    Watch for and answer any prompts.
+
+    This will install Docker and run an admin web console on port 8800, which you will use to configure your On-Site instance and complete the installation below.
+
+<a name="2-configure-server"></a>
+## 2. Configure and start your On-Site instance
+
+- Get a license key by <a href="https://www.npmjs.com/onsite#free-trial" target="_blank">signing up</a> for a free trial license
+
+    You will need a license key to continue.
+
+- Visit `https://<your-server>:8800` in your favorite web browser and proceed past the security warning
+
+    The security warning is due to initial use of a self-signed certificate. You can plug in your own SSL/TLS certificate in the next step.
+
+- Paste your server's DNS name or IP in the "Hostname" field and choose your SSL/TLS option
+
+    If using the self-signed certificate, proceed past the browser security warning again if you are redirected to `https://<dns-name>:8800`.
+
+- Enter "Billing Email" and "License Key" you received via email or the npmjs.com site and hit "Continue"
+- Enter a new password to protect your admin console and hit "Continue"
+- Select your desired settings and hit "Save"
+
+    Enter your company's name in "Your company name" and, for purposes of quickstart, select "Open" for "Authentication". Other default settings should be fine.
+
+    Note that you can always come back and change configuration later. Any time you change configuration settings, you must restart the services for the changes to take effect.
+
+    Please visit [this page](/enterprise/server-configuration) for details on configuration settings.
+
+- Hit "Take me to the Dashboard"
+
+    The admin console will begin to download all the services that make up your registry and run them as Docker containers. If the services don't start automatically, use the "Start Now" button in the top-left panel of the Dashboard.
+
+    Wait for the services to reach a status of "Started". Once they do, your registry is up and ready for use.
+
+- Quickly verify that your registry is running and accessible
+
+    Either run `curl http://<your-server>:8080` or visit that url in your browser. If you get a JSON response, your On-Site registry is good to go!
+
+<a name="3-configure-client"></a>
+## 3. Configure the npm CLI to talk to your registry
+
+- Select a scope name for your company or project
+
+    You will use this scope as a prefix for all private packages. E.g. if you choose `@myco` for a scope, you could have private packages named `@myco/foo` and `@myco/bar`.
+
+- Login to your registry and associate it with your scope name
+
+    On your local computer, use the following command and plug in your registry url and selected scope name.
+
+    ```
+    $ npm login --registry http://<your-server>:8080 --scope @myco
+    Username: me
+    Password:
+    Email: (this IS public) me@myco.com
+    ```
+
+    The username, password, and email you use should respect the configured authentication strategy in your On-Site admin web console. If using the "Open" authentication strategy, any values will work.
+
+    Note that this will add content to your [`.npmrc`](/files/npmrc) file, similar to the following:
+
+    ```
+    @myco:registry=http://<your-server>:8080/
+    //<your-server>:8080/:_authToken=abc123
+    ```
+
+    With this in place, any publishes or installs of packages with the `@myco` scope will automatically go to or come from your private On-Site registry.
+
+    For more details on configuring the npm client for your On-Site registry, see [this page](/enterprise/client-configuration).
+
+- Optionally set your On-Site registry as your primary registry
+
+    ```
+    $ npm config set registry http://<your-server>:8080
+    ```
+
+    This will add the following to your [`.npmrc`](/files/npmrc) file:
+
+    ```
+    registry=http://<your-server>:8080/
+    ```
+
+    With this in place, all installs will go through your On-Site registry.
+
+    If using this option, you should make sure the "Read Through Cache" setting is enabled (default) in the admin console of your server.
+
+<a name="4-use"></a>
+## 4. Publish, install, and search for packages
+
+- Publish a scoped package to your On-Site registry
+
+    Create a test package named after your scope and `npm publish` it. Here's an example:
+
+    ```
+    $ mkdir test-pkg
+    $ cd test-pkg
+    $ npm init -y --scope @myco
+    $ echo "module.exports = 'test successful'\n" > index.js
+    $ npm publish
+    ```
+
+    Visit your registry's website at `http://<your-server>:8081/` and find the `@myco/test-pkg` package under "recently updated packages".
+
+    For more details on publishing packages to your On-Site registry, see [this page](/enterprise/using-it).
+
+- Install a scoped package from your On-Site registry
+
+    Verify you can install the test package created above. Go to another directory and `npm install` it.
+
+    ```
+    $ mkdir downstream
+    $ cd downstream
+    $ npm install @myco/test-pkg
+    $ node -e "console.log(require('@myco/test-pkg'))"
+    test successful
+    ```
+
+    The package should be downloaded to a local `node_modules` directory so you can `require()` and use it.
+
+- Search for packages using the CLI
+
+    ```
+    $ npm search @myco
+    ```
+
+- Search for package using the website
+
+    Visit your registry's website at `http://<your-server>:8081/` and use the "find on-site packages" search bar at the top.
